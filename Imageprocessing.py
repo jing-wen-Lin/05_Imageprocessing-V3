@@ -53,17 +53,23 @@ for g in range(30) :
 def rotate_about_center(src, angle, scale=1.):
     w = src.shape[1]
     h = src.shape[0]
-    rangle = np.deg2rad(angle)  # angle in radians
+    rangle = np.deg2rad(angle)  # angle in radians弧度的角度
     # now calculate new image width and height
+    #現在計算新的圖像寬度和高度
     nw = (abs(np.sin(rangle)*h) + abs(np.cos(rangle)*w))*scale
     nh = (abs(np.cos(rangle)*h) + abs(np.sin(rangle)*w))*scale
     # ask OpenCV for the rotation matrix
+    #向OpenCV要求旋轉矩陣
     rot_mat = cv2.getRotationMatrix2D((nw*0.5, nh*0.5), angle, scale)
     # calculate the move from the old center to the new center combined
+    #計算從舊中心到新中心的組合
     # with the rotation
+    #隨著旋轉
     rot_move = np.dot(rot_mat, np.array([(nw-w)*0.5, (nh-h)*0.5,0]))
     # the move only affects the translation, so update the translation
+    #移動只會影響翻譯，因此請更新翻譯
     # part of the transform
+    #變換的一部分
     rot_mat[0,2] += rot_move[0]
     rot_mat[1,2] += rot_move[1]
     return cv2.warpAffine(src, rot_mat, (int(math.ceil(nw)), int(math.ceil(nh))), flags=cv2.INTER_LANCZOS4)
